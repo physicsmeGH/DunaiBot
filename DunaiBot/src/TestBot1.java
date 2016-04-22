@@ -16,6 +16,7 @@ public class TestBot1 extends DefaultBWListener {
 	public static final int STATUS_GATHERING = 2;
 	public static final int STATUS_STUCK = 3;
 	
+	
 	public static final BiConsumer<Unit, Position> FUNCTION_ATTACK_POSITION = 
 			(unit, position) -> {unit.attack(position);};
 			
@@ -32,18 +33,28 @@ public class TestBot1 extends DefaultBWListener {
 		
 		private UnitType building;
 		
+		private Queue<UnitType> buidQueue;
+		
 		public BuilderUnits(){
 			this.units = new HashMap<Unit,Integer>();
 			this.numbers = 0;
 			
 		}
-		
+		public int getBuilderCount(){
+			numbers = 0;
+			for(Entry<Unit,Integer> entry:units.entrySet()){
+				if(entry.getValue()==STATUS_IDLE||entry.getValue()==STATUS_BUILDING){
+					numbers++;
+				}
+			}
+			return numbers;
+		}
 		
 		
 		public void addBuilder(Unit unit){
-			if(numbers<5){
+			if(getBuilderCount()<5){
 				units.put(unit, STATUS_IDLE);
-				numbers ++;
+				//numbers ++;
 			}
 			else{
 				units.put(unit, STATUS_GATHERING);
@@ -70,7 +81,7 @@ public class TestBot1 extends DefaultBWListener {
 			if(currentBuilderUnit.canBuild(type, pos)){
 				currentBuilderUnit.build(type, pos);
 				units.put(currentBuilderUnit, STATUS_BUILDING);
-				this.numbers--;
+				this.getBuilderCount();
 				return 1;
 			}
 			else{
