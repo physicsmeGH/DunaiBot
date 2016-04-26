@@ -119,7 +119,9 @@ public class DunaiBot extends DefaultBWListener {
 
     private Player self;
     
-    private MapManager mapManager;
+    protected MapManager mapManager;
+    
+    protected BuildingManager buildingManager;
     
     private int workerCount;
     
@@ -131,11 +133,17 @@ public class DunaiBot extends DefaultBWListener {
     
     private Map<UnitType,Integer> unitCount;
     
+    
+    
     public void run() {
         mirror.getModule().setEventListener(this);
         mirror.startGame();
     }
     
+    
+    public Player getPlayer(){
+    	return self;
+    }
     public Game getGame(){
     	return game;
     }
@@ -147,8 +155,10 @@ public class DunaiBot extends DefaultBWListener {
     @Override
     public void onUnitCreate(Unit unit) {
     	UnitType type = unit.getType();
-        System.out.println("New unit discovered " + type);
-        modUnitCount(type, 1);
+    	if(unit.getPlayer()==self){
+    		System.out.println("New unit discovered " + type);
+    		modUnitCount(type, 1);
+    	}
         
     }
     

@@ -5,7 +5,7 @@ import bwapi.*;
 import java.util.*;
 
 public class EnhancedRegion {
-	private Region region;
+	protected final Region region;
 	
 	private boolean isUnderControl;
 	

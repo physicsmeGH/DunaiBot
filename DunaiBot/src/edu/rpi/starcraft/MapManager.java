@@ -15,7 +15,7 @@ public class MapManager extends Manager {
 	
 	private ArrayList<Region> regions;
 	
-	private AsWeightedGraph<Region, Chokepoint> mapGraph;
+	private AsWeightedGraph<EnhancedRegion, Chokepoint> mapGraph;
 	
 	
 	public void visualizeRegion(bwapi.Region region){
@@ -73,20 +73,24 @@ public class MapManager extends Manager {
 		// TODO Auto-generated constructor stub
 		chokepoints = new ArrayList<Chokepoint>(BWTA.getChokepoints());
 		regions = new ArrayList<Region>(BWTA.getRegions());
-		SimpleGraph<Region,Chokepoint> newGraph = new SimpleGraph<Region, Chokepoint>(Chokepoint.class);
+		SimpleGraph<EnhancedRegion,Chokepoint> newGraph = new SimpleGraph<EnhancedRegion, Chokepoint>(Chokepoint.class);
 		HashMap<Chokepoint,Double> weightMap = new HashMap<Chokepoint,Double>();
+		HashMap<Region,EnhancedRegion> regionMap = new HashMap<Region,EnhancedRegion>();
 		for(Region region:regions){
-			newGraph.addVertex(region);
+			EnhancedRegion eRegion = new EnhancedRegion(region);
+			newGraph.addVertex(eRegion);
+			regionMap.put(region, eRegion);
 		}
 		for(Chokepoint chokepoint:chokepoints){
-			Region regionOne, regionTwo;
-			regionOne = chokepoint.getRegions().first;
-			regionTwo = chokepoint.getRegions().second;
-			double distance = regionOne.getDistance(regionTwo);
+			EnhancedRegion regionOne, regionTwo;
+			regionOne = regionMap.get(chokepoint.getRegions().first);
+			regionTwo = regionMap.get(chokepoint.getRegions().second);
+			double distance = regionOne.region.getDistance(regionTwo.region);
 			newGraph.addEdge(regionOne, regionTwo, chokepoint);
 			weightMap.put(chokepoint, distance);
 		}
-		mapGraph = new AsWeightedGraph<Region,Chokepoint>(newGraph, weightMap);
+		mapGraph = new AsWeightedGraph<EnhancedRegion,Chokepoint>(newGraph, weightMap);
+		
 		
 		
 	}

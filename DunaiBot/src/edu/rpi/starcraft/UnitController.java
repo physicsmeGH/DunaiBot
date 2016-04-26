@@ -51,6 +51,7 @@ public class UnitController {
 			}
 			else{
 				UnitCommand currentCommand = commandQueue.peek();
+				
 				if(unit.canIssueCommand(currentCommand)){
 					commandQueue.remove();
 					unit.issueCommand(currentCommand);
