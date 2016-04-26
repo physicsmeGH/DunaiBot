@@ -1,6 +1,10 @@
+package edu.rpi.starcraft;
+
 import bwapi.*;
 import bwta.BWTA;
 import bwta.BaseLocation;
+import bwta.Region;
+
 import java.util.*;
 import java.util.Map.*;
 import java.util.function.*;
@@ -8,7 +12,7 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 
 
-public class TestBot1 extends DefaultBWListener {
+public class DunaiBot extends DefaultBWListener {
 	
 	
 	public static final int STATUS_IDLE = 0;
@@ -115,6 +119,8 @@ public class TestBot1 extends DefaultBWListener {
 
     private Player self;
     
+    private MapManager mapManager;
+    
     private int workerCount;
     
     private int newWorkerCount;
@@ -128,6 +134,14 @@ public class TestBot1 extends DefaultBWListener {
     public void run() {
         mirror.getModule().setEventListener(this);
         mirror.startGame();
+    }
+    
+    public Game getGame(){
+    	return game;
+    }
+    
+    public void drawCircleAt(Position pos, int radius, Color color){
+    	game.drawCircleMap(pos, radius, color);
     }
 
     @Override
@@ -174,6 +188,9 @@ public class TestBot1 extends DefaultBWListener {
         BWTA.readMap();
         BWTA.analyze();
         System.out.println("Map data ready");
+        
+        game.sendText("black sheep wall");
+        mapManager = new MapManager(this);
         
         int i = 0;
         for(BaseLocation baseLocation : BWTA.getBaseLocations()){
@@ -273,6 +290,7 @@ public class TestBot1 extends DefaultBWListener {
     @Override
     public void onFrame() {
         //game.setTextSize(10);
+    	mapManager.tacticalOverlay();
         game.drawTextScreen(10, 10, "Playing as " + self.getName() + " - " + self.getRace());
 
         StringBuilder units = new StringBuilder("My units:\n");
@@ -350,6 +368,6 @@ public class TestBot1 extends DefaultBWListener {
     }
 
     public static void main(String[] args) {
-        new TestBot1().run();
+        new DunaiBot().run();
     }
 }

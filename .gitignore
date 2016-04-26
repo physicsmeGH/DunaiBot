@@ -1,2 +1,5 @@
 /DunaiBot/bin/
 /.settings/
+/DunaiBot/src/bwta/
+/DunaiBot/src/bwapi/
+/DunaiBot/bwapi-data/

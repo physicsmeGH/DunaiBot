@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_77_x86"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_91_x86"/>
 	<classpathentry kind="lib" path="lib/bwmirror_v2_5.jar"/>
+	<classpathentry kind="lib" path="lib/jgraph-5.13.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/jgrapht-core-0.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jgrapht-ext-0.9.2-uber.jar"/>
+	<classpathentry kind="lib" path="lib/jgrapht-ext-0.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jgraphx-2.0.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
