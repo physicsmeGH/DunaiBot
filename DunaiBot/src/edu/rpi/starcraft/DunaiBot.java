@@ -123,6 +123,14 @@ public class DunaiBot extends DefaultBWListener {
     
     protected BuildingManager buildingManager;
     
+    protected CombatManager combatManager;
+    
+    protected ProductionManager productionManager;
+    
+    protected TechManager techManager;
+    
+    
+    
     private int workerCount;
     
     private int newWorkerCount;
@@ -162,6 +170,10 @@ public class DunaiBot extends DefaultBWListener {
         
     }
     
+    @Override
+    public void onReceiveText(Player player, String text){
+    	System.out.println("received text, " +player.toString() + ": "+text);
+    }
     
     public void onUnitDestroy(Unit unit){
     	UnitType type = unit.getType();
@@ -191,7 +203,9 @@ public class DunaiBot extends DefaultBWListener {
         self = game.self();
         workerCount = 4;
         unitCount = new HashMap<UnitType,Integer>();
-
+        
+        
+        
         //Use BWTA to analyze map
         //This may take a few minutes if the map is processed first time!
         System.out.println("Analyzing map...");
@@ -199,8 +213,12 @@ public class DunaiBot extends DefaultBWListener {
         BWTA.analyze();
         System.out.println("Map data ready");
         
-        game.sendText("black sheep wall");
+        //game.sendText("black sheep wall");
         mapManager = new MapManager(this);
+        buildingManager = new BuildingManager(this);
+        combatManager = new CombatManager(this);
+        productionManager = new ProductionManager(this);
+        techManager = new TechManager(this);
         
         int i = 0;
         for(BaseLocation baseLocation : BWTA.getBaseLocations()){

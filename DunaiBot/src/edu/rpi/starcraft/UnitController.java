@@ -32,9 +32,9 @@ public class UnitController {
 	}
 	
 	
-	private Unit unit;
-	private Queue<UnitCommand> commandQueue;
-	private int status;
+	protected Unit unit;
+	protected Queue<UnitCommand> commandQueue;
+	protected int status;
 	
 	public void addCommand(UnitCommand command){
 		commandQueue.add(command);

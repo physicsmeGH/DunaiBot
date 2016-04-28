@@ -4,18 +4,39 @@ import bwta.*;
 import bwta.Region;
 import bwapi.*;
 import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import org.jgraph.*;
 import org.jgrapht.graph.*;
 import org.jgrapht.graph.AsWeightedGraph;
 import org.jgrapht.graph.SimpleGraph;
 
-public class MapManager extends Manager {
+public class MapManager extends AbstractManager implements Manager {
 	
 	private ArrayList<Chokepoint> chokepoints;
 	
 	private ArrayList<Region> regions;
 	
 	private AsWeightedGraph<EnhancedRegion, Chokepoint> mapGraph;
+	
+	protected Map<Pair<Integer,Integer>,EnhancedRegion> regionMap;
+	
+	public EnhancedRegion getNearestRegion(Position pos){
+		Comparator<Entry<Pair<Integer,Integer>,EnhancedRegion>> c = (Entry<Pair<Integer,Integer>,EnhancedRegion> ent1,Entry<Pair<Integer,Integer>,EnhancedRegion> ent2)->{
+			Pair<Integer,Integer> pos1,pos2;
+			pos1 = ent1.getKey();
+			pos2 = ent2.getKey();
+			int deltaXOne = pos1.first-pos.getX();
+			int deltaYOne = pos1.second-pos.getY();
+			int deltaXTwo = pos2.first-pos.getX();
+			int deltaYTwo = pos2.second-pos.getY();
+			return Integer.compare(deltaXOne*deltaXOne+deltaYOne*deltaYOne, deltaXTwo*deltaXTwo+deltaYTwo*deltaYTwo);
+		};
+		List<Entry<Pair<Integer,Integer>,EnhancedRegion>> sortedRegions = regionMap.entrySet().stream().collect(Collectors.toList());
+		sortedRegions.sort(c);
+		return sortedRegions.get(0).getValue();
+	}
 	
 	
 	public void visualizeRegion(bwapi.Region region){
@@ -67,31 +88,45 @@ public class MapManager extends Manager {
 			visualizeRegion(region);
 		}
 	}
-	
+	private Pair<Integer,Integer> regionToCord(Region region){
+		return new Pair<Integer,Integer>(region.getCenter().getX(),region.getCenter().getY());
+	}
 	public MapManager(DunaiBot creator) {
 		super(creator);
 		// TODO Auto-generated constructor stub
 		chokepoints = new ArrayList<Chokepoint>(BWTA.getChokepoints());
 		regions = new ArrayList<Region>(BWTA.getRegions());
 		SimpleGraph<EnhancedRegion,Chokepoint> newGraph = new SimpleGraph<EnhancedRegion, Chokepoint>(Chokepoint.class);
-		HashMap<Chokepoint,Double> weightMap = new HashMap<Chokepoint,Double>();
-		HashMap<Region,EnhancedRegion> regionMap = new HashMap<Region,EnhancedRegion>();
+		Map<Chokepoint,Double> weightMap = new HashMap<Chokepoint,Double>();
+		regionMap = new HashMap<Pair<Integer,Integer>,EnhancedRegion>();
 		for(Region region:regions){
 			EnhancedRegion eRegion = new EnhancedRegion(region);
 			newGraph.addVertex(eRegion);
-			regionMap.put(region, eRegion);
+			regionMap.put(regionToCord(region), eRegion);
+			
+			
+			
 		}
 		for(Chokepoint chokepoint:chokepoints){
 			EnhancedRegion regionOne, regionTwo;
-			regionOne = regionMap.get(chokepoint.getRegions().first);
-			regionTwo = regionMap.get(chokepoint.getRegions().second);
+			regionOne = regionMap.get(regionToCord(chokepoint.getRegions().first));
+			regionTwo = regionMap.get(regionToCord(chokepoint.getRegions().second));
 			double distance = regionOne.region.getDistance(regionTwo.region);
-			newGraph.addEdge(regionOne, regionTwo, chokepoint);
-			weightMap.put(chokepoint, distance);
+			if(!regionOne.equals(regionTwo)){
+				newGraph.addEdge(regionOne, regionTwo, chokepoint);
+				weightMap.put(chokepoint, distance);
+			}
 		}
 		mapGraph = new AsWeightedGraph<EnhancedRegion,Chokepoint>(newGraph, weightMap);
 		
 		
+		
+	}
+
+
+	@Override
+	public void actionOnFrame() {
+		// TODO Auto-generated method stub
 		
 	}
 

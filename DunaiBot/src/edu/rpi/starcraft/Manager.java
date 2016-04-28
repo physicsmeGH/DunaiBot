@@ -1,15 +1,7 @@
 package edu.rpi.starcraft;
 
-public class Manager {
+public interface Manager {
 	
-	public DunaiBot ownerBot;
-	
-	
-
-	public Manager(DunaiBot creator) {
-		
-		ownerBot = creator;
-		// TODO Auto-generated constructor stub
-	}
+	public void actionOnFrame();
 
 }
